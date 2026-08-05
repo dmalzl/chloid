@@ -103,81 +103,80 @@
     input = _CLK * 6 # scale to 24PPQ
     output = O8
 
-#####################
+# ####################
 # algoquencer setup #
-#####################
+# ####################
 # select mutes when on else usual track select
 [button]
-    button  = B1.3
-    led     = L1.3
-    output  = _MUTE_SEL
+    button = B1.3
+    led = L1.3
+    output = _MUTE_SEL
     negated = _TRACK_SEL
 
-    
 # select between the four available algoquencers
 # second column of p2b8
 [buttongroup]
-    select  = _TRACK_SEL
-    button1 = B2.29
-    button2 = B2.30
-    button3 = B2.31
-    button4 = B2.32
-    led1    = L2.29
-    led2    = L2.30
-    led3    = L2.30
-    led4    = L2.32
+    select = _TRACK_SEL
+    button1 = B1.2
+    button2 = B1.4
+    button3 = B1.6
+    button4 = B1.8
+    led1 = L1.2
+    led2 = L1.4
+    led3 = L1.6
+    led4 = L1.8
 
 [buttongroup]
-    select    = _MUTE_SEL
+    select = _MUTE_SEL
     minactive = 0
     maxactive = 4
-    button1   = B2.29
-    button2   = B2.30
-    button3   = B2.31
-    button4   = B2.32
-    led1      = L2.29
-    led2      = L2.30
-    led3      = L2.31
-    led4      = L2.32
+    button1 = B1.2
+    button2 = B1.4
+    button3 = B1.6
+    button4 = B1.8
+    led1 = L1.2
+    led2 = L1.4
+    led3 = L1.6
+    led4 = L1.8
 
 # track 1
 [algoquencer]
-    select     = L2.29 * _TRACK_SEL # make sure this only fires when _TRACK_SEL is active
-    clock      = _CLK
-    reset      = _RESET
-    mutebutton = B2.29 * _MUTE_SEL # make sure this only fires when _MUTE_SEL is active
-    muteled    = _SHOW_MUTE_1
-    gate       = G1
-    pitch      = O1
-    button1    = B2.1
-    button2    = B2.2
-    button3    = B2.3
-    button4    = B2.4
-    button5    = B2.5
-    button6    = B2.6
-    button7    = B2.7
-    button8    = B2.8
-    button9    = B2.9
-    button10   = B2.10
-    button11   = B2.11
-    button12   = B2.12
-    button13   = B2.13
-    button14   = B2.14
-    button15   = B2.15
-    button16   = B2.16
-    led1       = L2.1
-    led2       = L2.2
-    led3       = L2.3
-    led4       = L2.4
-    led5       = L2.5
-    led6       = L2.6
-    led7       = L2.7
-    led8       = L2.8
-    led9       = L2.9
-    led10      = L2.10
-    led11      = L2.11
-    led12      = L2.12
-    led13      = L2.13
-    led14      = L2.14
-    led15      = L2.15
-    led16      = L2.16
+    select = L1.2 * _TRACK_SEL # make sure this only fires when _TRACK_SEL is active
+    clock = _CLK
+    reset = _RESET
+    mutebutton = B1.2 * _MUTE_SEL # make sure this only fires when _MUTE_SEL is active
+    muteled = L1.3
+    gate = G1.1
+    pitch = O1
+    button1 = B2.1
+    button2 = B2.2
+    button3 = B2.3
+    button4 = B2.4
+    button5 = B2.5
+    button6 = B2.6
+    button7 = B2.7
+    button8 = B2.8
+    button9 = B2.9
+    button10 = B2.10
+    button11 = B2.11
+    button12 = B2.12
+    button13 = B2.13
+    button14 = B2.14
+    button15 = B2.15
+    button16 = B2.16
+    led1 = L2.1
+    led2 = L2.2
+    led3 = L2.3 # cv
+    led4 = L2.4
+    led5 = L2.5
+    led6 = L2.6
+    led7 = L2.7
+    led8 = L2.8
+    led9 = L2.9
+    led10 = L2.10
+    led11 = L2.11
+    led12 = L2.12
+    led13 = L2.13
+    led14 = L2.14
+    led15 = L2.15
+    led16 = L2.16
