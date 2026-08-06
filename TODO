@@ -1,0 +1,5 @@
+add groove via timing
+figure out why pitch is not looping even if dejavu is 1
+fix leds in resetmode
+add clear buttons for resetting everything to blank (longpress to avoid accidents)
+add pitch slew and quant
