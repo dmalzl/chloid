@@ -1,0 +1,1223 @@
+# LABELS: master=18
+[p2b8]
+[b32]
+[e4]
+
+[encoderbank]
+    firstencoder = 1
+    output1 =
+    output2 =
+    output3 =
+    output4 =
+
+# ########
+# clock #
+# ########
+# setup clock and usage for 30 - 240 bpm
+# this is the internal clock set by P1.1
+[pot]
+    pot = P1.1
+    output = _RATE
+    ledgauge = off
+
+# we want 1 bpm per step so we need 240 - 30  = 210 steps
+[quantizer]
+    input = _RATE
+    steps = 210
+    output = _RATE_Q
+
+# here we want 30 to 240 BPM at 16th note resolution
+# convert bpm to Hz by dividing by 15 (this is divide by 60 to go from bpm to bps and then multiply by 4 to get 4PPQ)
+# -> 240 BPM = 16Hz; 30 BPM = 2Hz so we need to go from 2 to 16Hz
+# this means we need to scale _CLK_RATE by a factor of 14Hz / 1V = 14
+[lfo]
+    hz = _RATE_Q * 14 + 2
+    square = _INT_CLK
+
+# 24PPQ clock
+[clocktool]
+    clock = _INT_CLK
+    output = _INT_CLK_24
+    multiply = 6
+
+# #######
+# MIDI #
+# #######
+[midiin]
+    trs = 1
+    usb = 1
+    clock = _MIDI_CLK # this is 4PPQ per definition
+    midiclock = _MIDI_CLK_24
+    running = _MIDI_RUN
+
+# forward any received midi info to trs1
+[midithrough]
+    fromusb = 1
+    fromtrs = 1
+    totrs = 1
+
+[midiout]
+    trs = 2
+    usb = 1
+    clock = _INT_CLK
+
+# ##################
+# clock use setup #
+# ##################
+# use button 1 on p2b8 as play/pause
+# longpress to enter midi settings
+# button needs to be held to make changes
+[button]
+    button = B1.1
+    led = L1.1
+    onvalue = _DELAYED_CLK
+    offvalue = 0
+    output = _CLK
+    longpress = _CLK_SEL_MDE
+
+# use this to overlay state on normal B1.2
+# [logic]
+#   input1 = _CLK_SEL_MDE
+#   negated = _NORMAL_PRESS
+
+# [button]
+#   select = _NORMAL_PRESS
+#   button = B1.2
+#   led = _L12
+
+[button]
+    select = _CLK_SEL_MDE
+    button = B1.2
+    led = _USE_MIDI_CLK
+
+# add global clock delay to help sync midi
+[pot]
+    select = _CLK_SEL_MDE
+    pot = P1.2
+    bipolar = _GLBL_CLK_DLY
+    notch = 0.05
+    outputscale = 0.9
+
+# set L1.2 to half brightness when midi clock is used
+[switch]
+    offset = _USE_MIDI_CLK
+    input1 = 0
+    input2 = 0.2
+    output1 = _MIDI_LED
+
+[copy]
+    input = _MIDI_LED # + _L12 # use this to overlay LED state
+    output = L1.2
+
+# either select internal or external clock
+[switch]
+    input1 = _INT_CLK
+    input2 = _MIDI_CLK
+    offset = _USE_MIDI_CLK
+    output1 = _MASTER_CLK
+
+[clocktool]
+    clock = _MASTER_CLK
+    delay = _GLBL_CLK_DLY
+    output = _DELAYED_CLK
+
+# output selected clock
+[switch]
+    input1 = _INT_CLK_24
+    input2 = _MIDI_CLK_24
+    offset = _USE_MIDI_CLK
+    output1 = O8
+
+# select output run
+[switch]
+    input1 = L1.1
+    input2 = _MIDI_RUN
+    offset = _USE_MIDI_CLK
+    output1 = O6
+
+# #######################
+# algoquencer controls #
+# #######################
+# reset the currently selected track to step 1
+# or all tracks by longpress
+[buttongroup]
+    button1 = B1.3
+    button2 = B1.5
+    button3 = B1.7
+    led1 = _RESET_MDE
+    led2 = _TRK_SEL
+    led3 = _MUTE_MDE
+    maxactive = 1
+    minactive = 1
+    longpress = _LNG_PRS_ACT # currently only supports _RESET_ALL
+
+# ensures only reset uses longpress
+[logic]
+    input1 = _RESET_MDE
+    input2 = _LNG_PRS_ACT
+    and = _RESET_ALL
+
+[logic]
+    input1 = _RESET_MDE
+    negated = _SHOW_ALGOS
+
+# forwarding state to LEDs
+# this is done for better readability
+[copy]
+    input = _RESET_MDE
+    output = L1.3
+
+[copy]
+    input = _TRK_SEL
+    output = L1.5
+
+[copy]
+    input = _MUTE_MDE
+    output = L1.7
+
+[buttongroup]
+    minactive = 1
+    maxactive = 1
+    button1 = B1.4
+    button2 = B1.6
+    button3 = B1.8
+    led1 = _LEN_MDE
+    led2 = _GATE_MDE
+    led3 = _CV_MDE
+
+[copy]
+    input = _LEN_MDE
+    output = L1.4
+
+[copy]
+    input = _GATE_MDE
+    output = L1.6
+
+[copy]
+    input = _CV_MDE
+    output = L1.8
+
+# select encoderbanks
+# only available when reset mode is not active
+# this is because we use some of the selector buttons as reroll buttons in reset mode
+[buttongroup]
+    select = _SHOW_ALGOS
+    maxactive = 1
+    minactive = 1
+    button1 = B2.21
+    button2 = B2.22
+    button3 = B2.23
+    button4 = B2.24
+    button5 = B2.25
+    button6 = B2.26
+    button7 = B2.27
+    button8 = B2.28
+    button9 = B2.17
+    button10 = B2.18
+    button11 = B2.19
+    button12 = B2.20
+    led1 = _ACT_MDE
+    led2 = _VAR_MDE
+    led3 = _DEJ_MDE
+    led4 = _OFF_MDE
+    led5 = _DIST_MDE
+    led6 = _PLO_GLEN_MDE
+    led7 = _PHI_MDE
+    led8 = _PRES_MDE
+    led9 = _ALT_MDE
+    led10 = _GRV_MDE
+    led11 = _DLY_MDE
+    led12 = _DIV_MDE
+
+[copy]
+    input = _ACT_MDE * _SHOW_ALGOS
+    output = L2.21
+
+[copy]
+    input = _VAR_MDE * _SHOW_ALGOS
+    output = L2.22
+
+[copy]
+    input = _DEJ_MDE * _SHOW_ALGOS
+    output = L2.23
+
+[copy]
+    input = _OFF_MDE * _SHOW_ALGOS
+    output = L2.24
+
+[copy]
+    input = _DIST_MDE * _SHOW_ALGOS
+    output = L2.25
+
+[copy]
+    input = _PLO_GLEN_MDE * _SHOW_ALGOS
+    output = L2.26
+
+[copy]
+    input = _PHI_MDE * _SHOW_ALGOS
+    output = L2.27
+
+[copy]
+    input = _PRES_MDE * _SHOW_ALGOS
+    output = L2.28
+
+[copy]
+    input = _ALT_MDE * _SHOW_ALGOS
+    output = L2.17
+
+[copy]
+    input = _GRV_MDE * _SHOW_ALGOS
+    output = L2.18
+
+[copy]
+    input = _DLY_MDE * _SHOW_ALGOS
+    output = L2.19
+
+[copy]
+    input = _DIV_MDE * _SHOW_ALGOS
+    output = L2.20
+
+# gate algo encoders
+# activity
+[encoderbank]
+    select = _ACT_MDE * _GATE_MDE
+    firstencoder = E3.1
+    color = 0.15
+    notch = 0.05
+    startvalue = 0.5
+    output1 = _ACT_G1
+    output2 = _ACT_G2
+    output3 = _ACT_G3
+    output4 = _ACT_G4
+
+# variation
+[encoderbank]
+    select = _VAR_MDE * _GATE_MDE
+    firstencoder = E3.1
+    color = 0.3
+    startvalue = 0
+    output1 = _VAR_G1
+    output2 = _VAR_G2
+    output3 = _VAR_G3
+    output4 = _VAR_G4
+
+# dejavu
+[encoderbank]
+    select = _DEJ_MDE * _GATE_MDE
+    firstencoder = E3.1
+    color = 0.45
+    startvalue = 1
+    output1 = _DEJ_G1
+    output2 = _DEJ_G2
+    output3 = _DEJ_G3
+    output4 = _DEJ_G4
+
+# offbeats
+[encoderbank]
+    select = _OFF_MDE * _GATE_MDE
+    firstencoder = E3.1
+    color = 0.6
+    notch = 0.05
+    startvalue = 0.5
+    output1 = _OFF_G1
+    output2 = _OFF_G2
+    output3 = _OFF_G3
+    output4 = _OFF_G4
+
+# distribution
+[encoderbank]
+    select = _DIST_MDE * _GATE_MDE
+    firstencoder = E3.1
+    color = 0.75
+    notch = 0.05
+    startvalue = 0.5
+    output1 = _DIST_G1
+    output2 = _DIST_G2
+    output3 = _DIST_G3
+    output4 = _DIST_G4
+
+# gate length
+[encoderbank]
+    select = _PLO_GLEN_MDE * _GATE_MDE
+    firstencoder = E3.1
+    color = 0.9
+    outputoffset = 0.1 # this adheres to default and enables merging of successive aka legato
+    output1 = _GLEN_G1
+    output2 = _GLEN_G2
+    output3 = _GLEN_G3
+    output4 = _GLEN_G4
+
+# clock delay
+[encoderbank]
+    select = _DLY_MDE * _GATE_MDE
+    firstencoder = E3.1
+    color = 1.35
+    notch = 0.05
+    startvalue = 0
+    mode = 2
+    outputscale = 0.5
+    output1 = _DLY_G1
+    output2 = _DLY_G2
+    output3 = _DLY_G3
+    output4 = _DLY_G4
+
+# clock division
+[encoderbank]
+    select = _DIV_MDE * _GATE_MDE
+    firstencoder = E3.1
+    color = 1.5
+    discrete = 16
+    outputoffset = -8
+    startvalue = 8
+    output1 = _DIV_G1
+    output2 = _DIV_G2
+    output3 = _DIV_G3
+    output4 = _DIV_G4
+
+# cv algo encoders
+# activity
+[encoderbank]
+    select = _ACT_MDE * _CV_MDE
+    firstencoder = E3.1
+    color = 0.15
+    notch = 0.05
+    startvalue = 0.5
+    output1 = _ACT_CV1
+    output2 = _ACT_CV2
+    output3 = _ACT_CV3
+    output4 = _ACT_CV4
+
+# variation
+[encoderbank]
+    select = _VAR_MDE * _CV_MDE
+    firstencoder = E3.1
+    color = 0.3
+    startvalue = 0
+    output1 = _VAR_CV1
+    output2 = _VAR_CV2
+    output3 = _VAR_CV3
+    output4 = _VAR_CV4
+
+# dejavu
+[encoderbank]
+    select = _DEJ_MDE * _CV_MDE
+    firstencoder = E3.1
+    color = 0.45
+    startvalue = 1
+    output1 = _DEJ_CV1
+    output2 = _DEJ_CV2
+    output3 = _DEJ_CV3
+    output4 = _DEJ_CV4
+
+# offbeats
+[encoderbank]
+    select = _OFF_MDE * _CV_MDE
+    firstencoder = E3.1
+    color = 0.6
+    startvalue = 0.5
+    notch = 0.05
+    output1 = _OFF_CV1
+    output2 = _OFF_CV2
+    output3 = _OFF_CV3
+    output4 = _OFF_CV4
+
+# distribution
+[encoderbank]
+    select = _DIST_MDE * _CV_MDE
+    firstencoder = E3.1
+    color = 0.75
+    notch = 0.05
+    startvalue = 0.5
+    output1 = _DIST_CV1
+    output2 = _DIST_CV2
+    output3 = _DIST_CV3
+    output4 = _DIST_CV4
+
+# pitch low
+[encoderbank]
+    select = _PLO_GLEN_MDE * _CV_MDE
+    firstencoder = E3.1
+    color = 0.9
+    startvalue = 0
+    output1 = _PLO_CV1
+    output2 = _PLO_CV2
+    output3 = _PLO_CV3
+    output4 = _PLO_CV4
+
+# pitch high
+[encoderbank]
+    select = _PHI_MDE * _CV_MDE
+    firstencoder = E3.1
+    color = 1.05
+    startvalue = 1
+    output1 = _PHI_CV1
+    output2 = _PHI_CV2
+    output3 = _PHI_CV3
+    output4 = _PHI_CV4
+
+# pitch resolution
+[encoderbank]
+    select = _PRES_MDE * _CV_MDE
+    firstencoder = E3.1
+    color = 1.2
+    discrete = 16
+    startvalue = 3 # change this if you tend to change this often upon restart
+    output1 = _PRES_CV1
+    output2 = _PRES_CV2
+    output3 = _PRES_CV3
+    output4 = _PRES_CV4
+
+# clock delay
+[encoderbank]
+    select = _DLY_MDE * _CV_MDE
+    firstencoder = E3.1
+    color = 1.35
+    notch = 0.05
+    startvalue = 0
+    mode = 2
+    outputscale = 0.9
+    output1 = _DLY_CV1
+    output2 = _DLY_CV2
+    output3 = _DLY_CV3
+    output4 = _DLY_CV4
+
+# clock division
+[encoderbank]
+    select = _DIV_MDE * _CV_MDE
+    firstencoder = E3.1
+    color = 1.5
+    discrete = 16
+    startvalue = 8
+    outputoffset = -8
+    output1 = _DIV_CV1
+    output2 = _DIV_CV2
+    output3 = _DIV_CV3
+    output4 = _DIV_CV4
+
+# select between the four available algoquencers
+# last row of B32
+[buttongroup]
+    select = _TRK_SEL
+    minactive = 1
+    maxactive = 1
+    button1 = B2.29
+    button2 = B2.30
+    button3 = B2.31
+    button4 = B2.32
+    led1 = _SEL_1
+    led2 = _SEL_2
+    led3 = _SEL_3
+    led4 = _SEL_4
+
+# buttons for reset and reroll
+[button]
+    select = _RESET_MDE
+    button = B2.29
+    longpress = _RESET_BOTH_1
+    shortpress = _RESET_CURR_1
+
+[button]
+    select = _RESET_MDE
+    button = B2.30
+    longpress = _RESET_BOTH_2
+    shortpress = _RESET_CURR_2
+
+[button]
+    select = _RESET_MDE
+    button = B2.31
+    longpress = _RESET_BOTH_3
+    shortpress = _RESET_CURR_3
+
+[button]
+    select = _RESET_MDE
+    button = B2.32
+    longpress = _RESET_BOTH_4
+    shortpress = _RESET_CURR_4
+
+[button]
+    select = _RESET_MDE
+    button = B2.25
+    longpress = _REROLL_BOTH_1
+    shortpress = _REROLL_CURR_1
+
+[button]
+    select = _RESET_MDE
+    button = B2.26
+    longpress = _REROLL_BOTH_2
+    shortpress = _REROLL_CURR_2
+
+[button]
+    select = _RESET_MDE
+    button = B2.27
+    longpress = _REROLL_BOTH_3
+    shortpress = _REROLL_CURR_3
+
+[button]
+    select = _RESET_MDE
+    button = B2.28
+    longpress = _REROLL_BOTH_4
+    shortpress = _REROLL_CURR_4
+
+# ####################
+# algoquencer setup #
+# ####################
+# track 1
+# clock manipulations
+# division
+[compare]
+    input = _DIV_G1
+    compare = 0
+    ifgreater = _DIV_G1
+    ifless = 1
+    ifequal = 1
+    output = _MULT_G1
+
+[compare]
+    input = _DIV_G1
+    compare = 0
+    ifless = _DIV_G1 * -1
+    ifgreater = 1
+    ifequal = 1
+    output = _DIVI_G1
+
+[clocktool]
+    clock = _CLK
+    divide = _DIVI_G1
+    multiply = _MULT_G1
+    output = _DIV_CLK_G1
+
+# delay
+[clocktool]
+    clock = _DIV_CLK_G1
+    delay = _DLY_G1
+    output = _CLK_G1
+
+# reset logic
+[logic]
+    input1 = _RESET_CURR_1 * _GATE_MDE + _RESET_BOTH_1
+    input2 = _RESET_ALL
+    or = _RESET_G1
+
+[logic]
+    input1 = _RESET_CURR_1 * _CV_MDE + _RESET_BOTH_1
+    input2 = _RESET_ALL
+    or = _RESET_CV1
+
+# gate algo
+[algoquencer]
+    select = _SEL_1 * _SHOW_ALGOS
+    clock = _CLK_G1
+    reset = _RESET_G1
+    mutebutton = B2.29 * _MUTE_MDE
+    muteled = _MUTE_LED_1
+    lengthbutton = _SEL_1 * _LEN_MDE
+    activity = _ACT_G1
+    variation = _VAR_G1
+    dejavu = _DEJ_G1
+    offbeats = _OFF_G1
+    distribution = _DIST_G1
+    gatelength = _GLEN_G1
+    reroll = _REROLL_CURR_1 * _GATE_MDE + _REROLL_BOTH_1
+    gate = G1.1
+    button1 = B2.1
+    button2 = B2.2
+    button3 = B2.3
+    button4 = B2.4
+    button5 = B2.5
+    button6 = B2.6
+    button7 = B2.7
+    button8 = B2.8
+    button9 = B2.9
+    button10 = B2.10
+    button11 = B2.11
+    button12 = B2.12
+    button13 = B2.13
+    button14 = B2.14
+    button15 = B2.15
+    button16 = B2.16
+    led1 = L2.1
+    led2 = L2.2
+    led3 = L2.3
+    led4 = L2.4
+    led5 = L2.5
+    led6 = L2.6
+    led7 = L2.7
+    led8 = L2.8
+    led9 = L2.9
+    led10 = L2.10
+    led11 = L2.11
+    led12 = L2.12
+    led13 = L2.13
+    led14 = L2.14
+    led15 = L2.15
+    led16 = L2.16
+
+[switch]
+    offset = _SEL_1
+    input1 = _MUTE_LED_1 * 0.2
+    input2 = 1
+    output1 = _LED_1
+
+[switch]
+    offset = _MUTE_MDE
+    input1 = _LED_1
+    input2 = _MUTE_LED_1
+    output1 = L2.29
+
+# cv algo
+# clock manipulation
+# division
+[compare]
+    input = _DIV_CV1
+    compare = 0
+    ifgreater = _DIV_CV1
+    ifless = 1
+    ifequal = 1
+    output = _MULT_CV1
+
+[compare]
+    input = _DIV_CV1
+    compare = 0
+    ifless = _DIV_CV1 * -1
+    ifgreater = 1
+    ifequal = 1
+    output = _DIVI_CV1
+
+[clocktool]
+    clock = _CLK
+    divide = _DIVI_CV1
+    multiply = _MULT_CV1
+    output = _DIV_CLK_CV1
+
+# delay
+[clocktool]
+    clock = _DIV_CLK_CV1
+    delay = _DLY_CV1
+    output = _CLK_CV1
+
+[algoquencer]
+    select = _SEL_1 * _SHOW_ALGOS
+    clock = _CLK_CV1
+    reset = _RESET_CV1
+    lengthbutton = _SEL_1 * _LEN_MDE
+    activity = _ACT_CV1
+    variation = _VAR_CV1
+    dejavu = _DEJ_CV1
+    offbeats = _OFF_CV1
+    distribution = _DIST_CV1
+    pitchlow = _PLO_CV1
+    pitchhigh = _PHI_CV1
+    pitchresolution = _PRES_CV1
+    reroll = _REROLL_CURR_1 * _CV_MDE + _REROLL_BOTH_1
+    pitch = O1
+    button1 = B2.1
+    button2 = B2.2
+    button3 = B2.3
+    button4 = B2.4
+    button5 = B2.5
+    button6 = B2.6
+    button7 = B2.7
+    button8 = B2.8
+    button9 = B2.9
+    button10 = B2.10
+    button11 = B2.11
+    button12 = B2.12
+    button13 = B2.13
+    button14 = B2.14
+    button15 = B2.15
+    button16 = B2.16
+
+# track 2
+# clock manipulations
+# division
+[compare]
+    input = _DIV_G2
+    compare = 0
+    ifgreater = _DIV_G2
+    ifless = 1
+    ifequal = 1
+    output = _MULT_G2
+
+[compare]
+    input = _DIV_G2
+    compare = 0
+    ifless = _DIV_G2 * -1
+    ifgreater = 1
+    ifequal = 1
+    output = _DIVI_G2
+
+[clocktool]
+    clock = _CLK
+    divide = _DIVI_G2
+    multiply = _MULT_G2
+    output = _DIV_CLK_G2
+
+# delay
+[clocktool]
+    clock = _DIV_CLK_G2
+    delay = _DLY_G2
+    output = _CLK_G2
+
+# reset logic
+[logic]
+    input1 = _RESET_CURR_2 * _GATE_MDE + _RESET_BOTH_2
+    input2 = _RESET_ALL
+    or = _RESET_G2
+
+[logic]
+    input1 = _RESET_CURR_2 * _CV_MDE + _RESET_BOTH_2
+    input2 = _RESET_ALL
+    or = _RESET_CV2
+
+[algoquencer]
+    select = _SEL_2 * _SHOW_ALGOS
+    clock = _CLK_G2
+    reset = _RESET_G2
+    mutebutton = B2.30 * _MUTE_MDE
+    muteled = _MUTE_LED_2
+    lengthbutton = _SEL_2 * _LEN_MDE
+    activity = _ACT_G2
+    variation = _VAR_G2
+    dejavu = _DEJ_G2
+    offbeats = _OFF_G2
+    distribution = _DIST_G2
+    gatelength = _GLEN_G2
+    reroll = _REROLL_CURR_2 * _GATE_MDE + _REROLL_BOTH_2
+    gate = G1.2
+    button1 = B2.1
+    button2 = B2.2
+    button3 = B2.3
+    button4 = B2.4
+    button5 = B2.5
+    button6 = B2.6
+    button7 = B2.7
+    button8 = B2.8
+    button9 = B2.9
+    button10 = B2.10
+    button11 = B2.11
+    button12 = B2.12
+    button13 = B2.13
+    button14 = B2.14
+    button15 = B2.15
+    button16 = B2.16
+    led1 = L2.1
+    led2 = L2.2
+    led3 = L2.3
+    led4 = L2.4
+    led5 = L2.5
+    led6 = L2.6
+    led7 = L2.7
+    led8 = L2.8
+    led9 = L2.9
+    led10 = L2.10
+    led11 = L2.11
+    led12 = L2.12
+    led13 = L2.13
+    led14 = L2.14
+    led15 = L2.15
+    led16 = L2.16
+
+[switch]
+    offset = _SEL_2
+    input1 = _MUTE_LED_2 * 0.2
+    input2 = 1
+    output1 = _LED_2
+
+[switch]
+    offset = _MUTE_MDE
+    input1 = _LED_2
+    input2 = _MUTE_LED_2
+    output1 = L2.30
+
+# cv algo
+# clock manipulation
+# division
+[compare]
+    input = _DIV_CV2
+    compare = 0
+    ifgreater = _DIV_CV2
+    ifless = 1
+    ifequal = 1
+    output = _MULT_CV2
+
+[compare]
+    input = _DIV_CV2
+    compare = 0
+    ifless = _DIV_CV2 * -1
+    ifgreater = 1
+    ifequal = 1
+    output = _DIVI_CV2
+
+[clocktool]
+    clock = _CLK
+    divide = _DIVI_CV2
+    multiply = _MULT_CV2
+    output = _DIV_CLK_CV2
+
+# delay
+[clocktool]
+    clock = _DIV_CLK_CV2
+    delay = _DLY_CV2
+    output = _CLK_CV2
+
+[algoquencer]
+    select = _SEL_2 * _SHOW_ALGOS
+    clock = _CLK_CV2
+    reset = _RESET_CV2
+    lengthbutton = _SEL_2 * _LEN_MDE
+    activity = _ACT_CV2
+    variation = _VAR_CV2
+    dejavu = _DEJ_CV2
+    offbeats = _OFF_CV2
+    distribution = _DIST_CV2
+    pitchlow = _PLO_CV2
+    pitchhigh = _PHI_CV2
+    pitchresolution = _PRES_CV2
+    reroll = _REROLL_CURR_2 * _CV_MDE + _REROLL_BOTH_2
+    pitch = O3
+    button1 = B2.1
+    button2 = B2.2
+    button3 = B2.3
+    button4 = B2.4
+    button5 = B2.5
+    button6 = B2.6
+    button7 = B2.7
+    button8 = B2.8
+    button9 = B2.9
+    button10 = B2.10
+    button11 = B2.11
+    button12 = B2.12
+    button13 = B2.13
+    button14 = B2.14
+    button15 = B2.15
+    button16 = B2.16
+
+# track 3
+# clock manipulations
+# division
+[compare]
+    input = _DIV_G3
+    compare = 0
+    ifgreater = _DIV_G3
+    ifless = 1
+    ifequal = 1
+    output = _MULT_G3
+
+[compare]
+    input = _DIV_G3
+    compare = 0
+    ifless = _DIV_G3 * -1
+    ifgreater = 1
+    ifequal = 1
+    output = _DIVI_G3
+
+[clocktool]
+    clock = _CLK
+    divide = _DIVI_G3
+    multiply = _MULT_G3
+    output = _DIV_CLK_G3
+
+# delay
+[clocktool]
+    clock = _DIV_CLK_G3
+    delay = _DLY_G3
+    output = _CLK_G3
+
+# reset logic
+[logic]
+    input1 = _RESET_CURR_3 * _GATE_MDE + _RESET_BOTH_3
+    input2 = _RESET_ALL
+    or = _RESET_G3
+
+[logic]
+    input1 = _RESET_CURR_3 * _CV_MDE + _RESET_BOTH_3
+    input2 = _RESET_ALL
+    or = _RESET_CV3
+
+[algoquencer]
+    select = _SEL_3 * _SHOW_ALGOS
+    clock = _CLK_G3
+    reset = _RESET_G3
+    mutebutton = B2.31 * _MUTE_MDE
+    muteled = _MUTE_LED_3
+    lengthbutton = _SEL_3 * _LEN_MDE
+    activity = _ACT_G3
+    variation = _VAR_G3
+    dejavu = _DEJ_G3
+    offbeats = _OFF_G3
+    distribution = _DIST_G3
+    gatelength = _GLEN_G3
+    reroll = _REROLL_CURR_3 * _GATE_MDE + _REROLL_BOTH_3
+    gate = G1.3
+    button1 = B2.1
+    button2 = B2.2
+    button3 = B2.3
+    button4 = B2.4
+    button5 = B2.5
+    button6 = B2.6
+    button7 = B2.7
+    button8 = B2.8
+    button9 = B2.9
+    button10 = B2.10
+    button11 = B2.11
+    button12 = B2.12
+    button13 = B2.13
+    button14 = B2.14
+    button15 = B2.15
+    button16 = B2.16
+    led1 = L2.1
+    led2 = L2.2
+    led3 = L2.3
+    led4 = L2.4
+    led5 = L2.5
+    led6 = L2.6
+    led7 = L2.7
+    led8 = L2.8
+    led9 = L2.9
+    led10 = L2.10
+    led11 = L2.11
+    led12 = L2.12
+    led13 = L2.13
+    led14 = L2.14
+    led15 = L2.15
+    led16 = L2.16
+
+[switch]
+    offset = _SEL_3
+    input1 = _MUTE_LED_3 * 0.2
+    input2 = 1
+    output1 = _LED_3
+
+[switch]
+    offset = _MUTE_MDE
+    input1 = _LED_3
+    input2 = _MUTE_LED_3
+    output1 = L2.31
+
+# cv algo
+# clock manipulations
+# division
+[compare]
+    input = _DIV_CV3
+    compare = 0
+    ifgreater = _DIV_CV3
+    ifless = 1
+    ifequal = 1
+    output = _MULT_CV3
+
+[compare]
+    input = _DIV_CV3
+    compare = 0
+    ifless = _DIV_CV3 * -1
+    ifgreater = 1
+    ifequal = 1
+    output = _DIVI_CV3
+
+[clocktool]
+    clock = _CLK
+    divide = _DIVI_CV3
+    multiply = _MULT_CV3
+    output = _DIV_CLK_CV3
+
+# delay
+[clocktool]
+    clock = _DIV_CLK_CV3
+    delay = _DLY_CV3
+    output = _CLK_CV3
+
+[algoquencer]
+    select = _SEL_3 * _SHOW_ALGOS
+    clock = _CLK_CV3
+    reset = _RESET_CV3
+    lengthbutton = _SEL_3 * _LEN_MDE
+    activity = _ACT_CV3
+    variation = _VAR_CV3
+    dejavu = _DEJ_CV3
+    offbeats = _OFF_CV3
+    distribution = _DIST_CV3
+    pitchlow = _PLO_CV3
+    pitchhigh = _PHI_CV3
+    pitchresolution = _PRES_CV3
+    reroll = _REROLL_CURR_3 * _CV_MDE + _REROLL_BOTH_3
+    pitch = O5
+    button1 = B2.1
+    button2 = B2.2
+    button3 = B2.3
+    button4 = B2.4
+    button5 = B2.5
+    button6 = B2.6
+    button7 = B2.7
+    button8 = B2.8
+    button9 = B2.9
+    button10 = B2.10
+    button11 = B2.11
+    button12 = B2.12
+    button13 = B2.13
+    button14 = B2.14
+    button15 = B2.15
+    button16 = B2.16
+
+# track 4
+# clock manipulations
+# division
+[compare]
+    input = _DIV_G4
+    compare = 0
+    ifgreater = _DIV_G4
+    ifless = 1
+    ifequal = 1
+    output = _MULT_G4
+
+[compare]
+    input = _DIV_G4
+    compare = 0
+    ifless = _DIV_G4 * -1
+    ifgreater = 1
+    ifequal = 1
+    output = _DIVI_G4
+
+[clocktool]
+    clock = _CLK
+    divide = _DIVI_G4
+    multiply = _MULT_G4
+    output = _DIV_CLK_G4
+
+# delay
+[clocktool]
+    clock = _DIV_CLK_G4
+    delay = _DLY_G4
+    output = _CLK_G4
+
+# reset logic
+[logic]
+    input1 = _RESET_CURR_4 * _GATE_MDE + _RESET_BOTH_4
+    input2 = _RESET_ALL
+    or = _RESET_G4
+
+[logic]
+    input1 = _RESET_CURR_4 * _CV_MDE + _RESET_BOTH_4
+    input2 = _RESET_ALL
+    or = _RESET_CV4
+
+[algoquencer]
+    select = _SEL_4 * _SHOW_ALGOS
+    clock = _CLK_G4
+    reset = _RESET_G4
+    mutebutton = B2.32 * _MUTE_MDE
+    muteled = _MUTE_LED_4
+    lengthbutton = _SEL_4 * _LEN_MDE
+    activity = _ACT_G4
+    variation = _VAR_G4
+    dejavu = _DEJ_G4
+    offbeats = _OFF_G4
+    distribution = _DIST_G4
+    gatelength = _GLEN_G4
+    reroll = _REROLL_CURR_4 * _GATE_MDE + _REROLL_BOTH_4
+    gate = G1.4
+    button1 = B2.1
+    button2 = B2.2
+    button3 = B2.3
+    button4 = B2.4
+    button5 = B2.5
+    button6 = B2.6
+    button7 = B2.7
+    button8 = B2.8
+    button9 = B2.9
+    button10 = B2.10
+    button11 = B2.11
+    button12 = B2.12
+    button13 = B2.13
+    button14 = B2.14
+    button15 = B2.15
+    button16 = B2.16
+    led1 = L2.1
+    led2 = L2.2
+    led3 = L2.3
+    led4 = L2.4
+    led5 = L2.5
+    led6 = L2.6
+    led7 = L2.7
+    led8 = L2.8
+    led9 = L2.9
+    led10 = L2.10
+    led11 = L2.11
+    led12 = L2.12
+    led13 = L2.13
+    led14 = L2.14
+    led15 = L2.15
+    led16 = L2.16
+
+[switch]
+    offset = _SEL_4
+    input1 = _MUTE_LED_4 * 0.2
+    input2 = 1
+    output1 = _LED_4
+
+[switch]
+    offset = _MUTE_MDE
+    input1 = _LED_4
+    input2 = _MUTE_LED_4
+    output1 = L2.32
+
+# cv algo
+# clock manipulations
+# division
+[compare]
+    input = _DIV_CV4
+    compare = 0
+    ifgreater = _DIV_CV4
+    ifless = 1
+    ifequal = 1
+    output = _MULT_CV4
+
+[compare]
+    input = _DIV_CV4
+    compare = 0
+    ifless = _DIV_CV4 * -1
+    ifgreater = 1
+    ifequal = 1
+    output = _DIVI_CV4
+
+[clocktool]
+    clock = _CLK
+    divide = _DIVI_CV4
+    multiply = _MULT_CV4
+    output = _DIV_CLK_CV4
+
+# delay
+[clocktool]
+    clock = _DIV_CLK_CV4
+    delay = _DLY_CV4
+    output = _CLK_CV4
+
+[algoquencer]
+    select = _SEL_4 * _SHOW_ALGOS
+    clock = _CLK_CV4
+    reset = _RESET_CV4
+    lengthbutton = _SEL_4 * _LEN_MDE
+    activity = _ACT_CV4
+    variation = _VAR_CV4
+    dejavu = _DEJ_CV4
+    offbeats = _OFF_CV4
+    distribution = _DIST_CV4
+    pitchlow = _PLO_CV4
+    pitchhigh = _PHI_CV4
+    pitchresolution = _PRES_CV4
+    reroll = _REROLL_CURR_4 * _CV_MDE + _REROLL_BOTH_4
+    pitch = O7
+    button1 = B2.1
+    button2 = B2.2
+    button3 = B2.3
+    button4 = B2.4
+    button5 = B2.5
+    button6 = B2.6
+    button7 = B2.7
+    button8 = B2.8
+    button9 = B2.9
+    button10 = B2.10
+    button11 = B2.11
+    button12 = B2.12
+    button13 = B2.13
+    button14 = B2.14
+    button15 = B2.15
+    button16 = B2.16
