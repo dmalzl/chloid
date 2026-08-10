@@ -10,7 +10,7 @@ cat \
   modules/cv_mode_page2.ini \
   modules/cv_mode_page3.ini \
   modules/cv_mode_page4.ini \
-  modules/cv_mode_envp.ini \
+  modules/cv_mode_slewqp.ini \
   modules/cv_mode_clockp.ini \
   modules/performance_mode_interface.ini \
   algoquencers.ini \
