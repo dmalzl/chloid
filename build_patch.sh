@@ -5,7 +5,7 @@ cat \
   modules/gate_mode_page3.ini \
   modules/gate_mode_page4.ini \
   modules/gate_mode_envp.ini \
-  modules/gate_mode_clockp.ini
+  modules/gate_mode_clockp.ini \
   modules/cv_mode_page1.ini \
   modules/cv_mode_page2.ini \
   modules/cv_mode_page3.ini \
@@ -13,5 +13,5 @@ cat \
   modules/cv_mode_slewqp.ini \
   modules/cv_mode_clockp.ini \
   modules/performance_mode_interface.ini \
-  algoquencers.ini \
+  modules/algoquencers.ini \
   > droid.ini
