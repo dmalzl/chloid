@@ -9,6 +9,8 @@ The current setup is designed to have a minimal footprint in your case and consi
 - B32 controller
 - E4 controller
 
+It was developed for the blue-7 firmware
+
 ## What it does
 In essence, this patch implements a 4 track gate and CV sequencer with the ability to control gates and CV independent from each other. This is afforded by running two independent algoquencers per track (one for gates and one for CV). These two can be controlled and timed independent from each other meaning that you can set independent clock divisions, clock delays or grooves as well as all other parameters for the any of them. Additionally track 1 and 2 output an envelope triggered by the set steps. This allows to build a VCA based groove or any other parameter you want to control with it. Track 1 is designed to work as a sidechain envelope so by default it is inverted. Track 2 outputs the envelope as is. Finally you can decide whether you want to use the whole thing as a master clock or run it synced to a midi clock.
 
