@@ -114,5 +114,5 @@ This is supposed to be a summary of all the parameters their defaults their mapp
 |**CV**|SLEWQ + CV|Quantization Degree|0|**-1 / Bypassed** (Due to - 1 offset and < 0 bypass comparison)|0 - 11|E2|
 |**CV**|SLEWQ + CV|Quantization Root|0|**0**|0 - 12|E3|
 
-### Note on development
-This patch was developed on the blue-7 firmware so this currently assumes you have the blue-7 firmware on your DROID.
+## Note on development
+Due to the size of the patch I had to make modules for each page and functionality to be able to keep track of everything properly. You can find the individual module files in the `modules ` directory. If you want to build the full patch from it just run `build_patch.sh`. This will regenerate the `droid.ini` file for you.
