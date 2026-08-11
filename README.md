@@ -28,3 +28,89 @@ The function of the mode selectors is also self explanatory and will get even cl
 
 ## The modes
 The Chloid implements two main modes to get access to the controls of the GATE and CV algoquencers for each track. Each mode comes with a set of parameters  that are accessible via the B32 page selectors and manipulated via the E4 encoders. Additionally, you can always switch to an ALT mode which gives you access to the alternate pattern of the currently selected algoquencer or to a MUTE mode which allows you to mute any number of tracks (note this only mutes the gate and trigger outputs of the algoquencers so all CV related things are still output as is. This is especially important for the envelopes as we usually don't want to stop sidechaining etc. when the kick is muted. At least I don't). Below you find a detailed list of the modes and their parameters
+
+### Gate mode
+Gate mode gives you access to the gate algoquencers. You can select which of the algoquencers you want to edit by using the bottom row (button 29 - 32) of the B32. You can access the different parameters of each algoquencer via the the page selectors. Gate mode implements the following parameters x page combinations:
+
+|**PAGEselector**|**Modifier**|**Encoder 1 param**|**Encoder 2 param**|**Encoder 3 param**|**Encoder 4 param**|
+|---|---|---|---|---|---|
+|PAGE1|Short press|Activity|Variation|Dejavu|Offbeat|
+|PAGE2|Short press|Distribution|Gate Length|(Unused)|(Unused)|
+|PAGE3|Short press|Fills|Repeats|Alternate Bars|Morphs|
+|PAGE3|Long press|Fill Order|(Unused)|(Unused)|Branches|
+|PAGE3|ALT|(Unused)|Alternate Repeats|(Unused)|(Unused)|
+|PAGE4|Short press|Rolls|Roll Count|Roll Steps|(Unused)|
+|CLK|Short press|Clock Delay|Clock Division|(Unused)|(Unused)|
+|GRV|Short press|Timing 1|Timing 2|Timing 3|Timing 4|
+|GRV|Long press|Timing 5|Timing 6|Timing 7|Timing 8|
+|ENV|Short press|Attack Time|Hold Time|Release Time|Attenuation|
+|ENV|Long press|Attack Shape|(Unused)|Release Shape|(Unused)|
+|LEN|(Unused)|(Unused)|(Unused)|(Unused)|
+
+Given the above table you can see that there are a couple of button combinations that allow you to gain access to additional parameters at certain pages. E.g if you press the button 26 on the B32 you enter page 3 of the parameters. The encoders now control Fills, Repeats, Alternate Bars and Morphs. However, Repeats can also be set for the alternate bars. So pressing the ALT button gives you access to this at Encoder 2 (the same encoder controlling the repeats for the normal bars). Alternatively, one can also access the fill order and branches by simply holding the PAGE3 button down for 1.5 seconds or more. This will switch the encoders again to edit fill order and branches. So the general idea here is that parameters that go together are accessible by engaging a modifier. Then the parameters should be accessible at the same encoder its pendant was edited with. Another example of this would be the envelope page, where you can edit attack, hold and release time and by holding down the envelope button you get attack and release shape at E1 and E3 the same encoders attack and release time are accessed with. Unused encoders are always turned off.
+
+In addition to these there are a couple of other manipulators to be played around with, namely the PREV and NEXT button which will change the current pseudorandom patterns of the selected algoquencer, the reset button which will RESET the currently selected algoquencer to its first step and the CLEAR button which will reset the currently selected algoquencer and its parameters to the default state. You can also reroll the pattern of the current algoquencer by holding down both PREV and NEXT for more than 1.5 seconds. A clever shortcut to clear and reset both gate and cv algoquencer of the current track is to simply hold down RESET or CLEAR for more than 1.5 seconds.
+
+The only outlier here is the LEN page which does not give you access to any parameters but instead lets you toggle the pattern length of the currently selected algoquencer simply by pressing LEN and then any of the step buttons above.
+
+*A note on envelopes:* I made it such that muting the tracks does not mute the envelope triggers. So they keep being generated at the designated outputs. This was done for two reasons (i) mostly we don't want the envelope to stop an example would be sidechaining which is weird when suddenly turned off when the kick is muted (ii) you can always turn it off yourself via the attenuation parameter or any other means of attenuation outside the DROID.
+
+### CV mode
+CV mode gives you access to the CV algoquencers. You can select which of the algoquencers you want to edit by using the bottom row (button 29 - 32) of the B32. You can access the different parameters of each algoquencer via the the page selectors. CV mode implements the following parameters x page combinations:
+
+|**PAGEselector**|**Modifier**|**Encoder 1 param**|**Encoder 2 param**|**Encoder 3 param**|**Encoder 4 param**|
+|---|---|---|---|---|---|
+|PAGE1|Short press|Activity|Variation|Dejavu|Offbeat|
+|PAGE2|Short press|Distribution|Pitch low|Pitch high|Pitch resolution|
+|PAGE3|Short press|Fills|Repeats|Alternate Bars|Morphs|
+|PAGE3|Long press|Fill Order|(Unused)|(Unused)|Branches|
+|PAGE3|ALT|(Unused)|Alternate Repeats|(Unused)|(Unused)|
+|PAGE4|Short press|Rolls|Roll Count|Roll Steps|(Unused)|
+|CLK|Short press|Clock delay|Clock division|(Unused)|(Unused)|
+|GRV|Short press|Timing 1|Timing 2|Timing 3|Timing 4|
+|GRV|Long press|Timing 5|Timing 6|Timing 7|Timing 8|
+|SLEWQ|Short press|Slew Rate|Quantization Degree|Quantization Root|(Unused)|
+|LEN|(Unused)|(Unused)|(Unused)|(Unused)|
+
+CV mode is basically a copy of the gate mode with the exception that we exchange the envelope page for a slew/quantization page and the gate length for pitch low, pitch high and pitch resolution. The SLEWQ page gives us access to slew and quantization of the generated random voltages of the CV algoquencers. Pitch low, high and resolution are accessible via PAGE2.
+
+### Gate & CV Mode Parameter Defaults
+This is supposed to be a summary of all the parameters their defaults their mappings and how to access them. For more info on what the individual parameters do please have a look at the official manual. 
+
+|**Mode**|**Accessor**|**Parameter**|**Raw Default Value**|**Effective Final Value**|**Range**|**Encoder**|
+|---|---|---|---:|---|---|---|
+|**Both**|PAGE1 + GATE/CV|Activity|0.5|**50%** (Standard probability)|0 - 1|E1|
+|**Both**|PAGE1 + GATE/CV|Variation|0|**0%**|0 - 1|E2|
+|**Both**|PAGE1 + GATE/CV|Dejavu|1|**100%** (Locked loop)|0 - 1|E3|
+|**Both**|PAGE1 + GATE/CV|Offbeat|0.5|**50%** (Neutral timing)|0 - 1|E4|
+|**Both**|PAGE2 + GATE/CV|Distribution|0.5|**50%** (Even distribution)|0 - 1|E1|
+|**Gate**|PAGE2 + GATE|Gate Length|0|**0.1** (Due to + 0.1 offset)|0.1 - 1.1|E2|
+|**CV**|PAGE2 + CV|Pitch Low|0|**0V**|0 - 1|E2|
+|**CV**|PAGE2 + CV|Pitch High|0.3|**3V**|0 - 1|E3|
+|**CV**|PAGE2 + CV|Pitch Resolution|3|**3**|0 - 14 steps|E4|
+|**Both**|PAGE3 + GATE/CV|Fills|0|**0%**|0 - 1|E1|
+|**Both**|PAGE3 + GATE/CV + Long press|Fill Order|0|**0**|0 - 3|E1|
+|**Both**|PAGE3 + GATE/CV|Repeats|0|**1 Repeat**(Due to + 1 offset)|1 - 4|E2|
+|**Both**|PAGE3 + GATE/CV + ALT|Alternate Repeats|0|**1 Repeat** (Due to + 1 offset)|1 - 4|E2|
+|**Both**|PAGE3 + GATE/CV|Alternate Bars|2|**2 Bars** (Due to + 1 offset)|1 - 8|E3|
+|**Both**|PAGE3 + GATE/CV|Morphs|0|**0%**|0 - 1|E4|
+|**Both**|PAGE3 + GATE/CV + Long press|Branches|0|**0**|0 - 4|E4|
+|**Both**|PAGE4 + GATE/CV|Rolls|0|**0%**|0 - 1|E1|
+|**Both**|PAGE4 + GATE/CV|Roll Count|0|**1** (Due to + 1 offset)|1 - 5|E2|
+|**Both**|PAGE4 + GATE/CV|Roll Steps|0|**1** (Due to + 1 offset)|1 - 5|E3|
+|**Both**|CLK + GATE/CV|Clock Delay|0|**0ms**|-0.9 - 0.9|E1|
+|**Both**|CLK + GATE/CV|Clock Division|7|**0 / 1:1 Ratio** (Due to - 7 offset mapped to -7/+7 range)|/7 - *7|E2|
+|**Both**|GRV + GATE/CV|Timings 1-4|0|**0 Offset** (Perfectly quantized)|-0.9 - 0.9|E1 - E4|
+|**Both**|GRV + Long press + GATE/CV|Timings 4-8|0|**0 Offset** (Perfectly quantized)|-0.9 - 0.9|E1 - E4|
+|**Gate**|TRK1/TRK2 + ENV|Attack Time|0.1|**100ms** (Scaled via * 10 in contour)|0ms - 1s|E1|
+|**Gate**|TRK1/TRK2 + ENV + Long press|Attack Shape|0.5|**50%** (Linear)|0 - 1|E1|
+|**Gate**|TRK1/TRK2 + ENV|Hold Time|0.25|**500ms**|0ms - 2s|E2|
+|**Gate**|TRK1/TRK2 + ENV|Release Time|0.05|**50ms**|0ms - 2s|E3|
+|**Gate**|TRK1/TRK2 + ENV + Long press|Release Shape|0.5|**50%** (Linear)|0 - 1|E3|
+|**Gate**|TRK1/TRK2 + ENV|Attenuation|1|**100% Level**|0 - 1|E4|
+|**CV**|SLEWQ + CV|Slew Rate|0|**0%** (No slew)|0 - 0.4|E1|
+|**CV**|SLEWQ + CV|Quantization Degree|0|**-1 / Bypassed** (Due to - 1 offset and < 0 bypass comparison)|0 - 11|E2|
+|**CV**|SLEWQ + CV|Quantization Root|0|**0**|0 - 12|E3|
+
+### Note on development
+This patch was developed on the blue-7 firmware so this currently assumes you have the blue-7 firmware on your DROID.
