@@ -12,6 +12,5 @@ cat \
   modules/cv_mode_page4.ini \
   modules/cv_mode_slewqp.ini \
   modules/cv_mode_clockp.ini \
-  modules/performance_mode_interface.ini \
   modules/algoquencers.ini \
   > droid.ini
