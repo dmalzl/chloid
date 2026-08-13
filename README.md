@@ -41,9 +41,9 @@ Gate mode gives you access to the gate algoquencers. You can select which of the
 |---|---|---|---|---|---|
 |PAGE1|Short press|Activity|Variation|Dejavu|Offbeat|
 |PAGE2|Short press|Distribution|Gate Length|(Unused)|(Unused)|
-|PAGE3|Short press|Fills|Repeats|Alternate Bars|Morphs|
+|PAGE3|Short press|Fills|Repeats|(Unused)|Morphs|
 |PAGE3|Extra press|Fill Order|(Unused)|(Unused)|Branches|
-|PAGE3|ALT|(Unused)|Alternate Repeats|(Unused)|(Unused)|
+|PAGE3|ALT|(Unused)|Alternate Repeats|Alternate Bars|(Unused)|
 |PAGE4|Short press|Rolls|Roll Count|Roll Steps|(Unused)|
 |CLK|Short press|Clock Delay|Clock Division|(Unused)|(Unused)|
 |GRV|Short press|Timing 1|Timing 2|Timing 3|Timing 4|
@@ -53,7 +53,7 @@ Gate mode gives you access to the gate algoquencers. You can select which of the
 |LEN|Short press|(Unused)|(Unused)|(Unused)|(Unused)|
 |LEN|Extra press|(Unused)|(Unused)|(Unused)|(Unused)|
 
-Given the above table you can see that there are a couple of button combinations that allow you to gain access to additional parameters at certain pages. E.g if you press the button 26 on the B32 you enter page 3 of the parameters. The encoders now control Fills, Repeats, Alternate Bars and Morphs. However, Repeats can also be set for the alternate bars. So pressing the ALT button gives you access to this at Encoder 2 (the same encoder controlling the repeats for the normal bars). Alternatively, one can also access the fill order and branches by simply pressing the PAGE3 button again. This will switch the encoders again to edit fill order and branches. So the general idea here is that parameters that go together are accessible by engaging a modifier. Then the parameters should be accessible at the same encoder its pendant was edited with. Another example of this would be the envelope page, where you can edit attack, hold and release time and by pressing the envelope button again you get attack and release shape at E1 and E3 the same encoders attack and release time are accessed with. Unused encoders are always turned off.
+Given the above table you can see that there are a couple of button combinations that allow you to gain access to additional parameters at certain pages. E.g if you press the button 26 on the B32 you enter page 3 of the parameters. The encoders now control Fills, Repeats and Morphs. However, Repeats can also be set for the alternate bars. So pressing the ALT button gives you access to this at Encoder 2 (the same encoder controlling the repeats for the normal bars). This also gives you access to the Alternate Bars parameter which determines how often the alternate repeats are played. Alternatively, one can also access the fill order and branches by simply pressing the PAGE3 button again. This will switch the encoders again to edit fill order and branches. So the general idea here is that parameters that go together are accessible by engaging a modifier. Then the parameters should be accessible at the same encoder its pendant was edited with. Another example of this would be the envelope page, where you can edit attack, hold and release time and by pressing the envelope button again you get attack and release shape at E1 and E3 the same encoders attack and release time are accessed with. Unused encoders are always turned off.
 
 In addition to these there are a couple of other manipulators to be played around with, namely the PREV and NEXT button which will change the current pseudorandom patterns of the selected algoquencer, the reset button which will RESET the currently selected algoquencer to its first step and the CLEAR button which will reset both algoquencers of the currently selected track their parameters to the default state (this was chosen because I found it more convenient but also because RAM is tight already). You can also reroll the pattern of the current algoquencer by holding down both PREV and NEXT for more than 1.5 seconds. A clever shortcut to clear and reset both gate and cv algoquencer of the current track is to simply hold down RESET or CLEAR for more than 1.5 seconds.
 
@@ -68,9 +68,9 @@ CV mode gives you access to the CV algoquencers. You can select which of the alg
 |---|---|---|---|---|---|
 |PAGE1|Short press|Activity|Variation|Dejavu|Offbeat|
 |PAGE2|Short press|Distribution|Pitch low|Pitch high|Pitch resolution|
-|PAGE3|Short press|Fills|Repeats|Alternate Bars|Morphs|
+|PAGE3|Short press|Fills|Repeats|(Unused)|Morphs|
 |PAGE3|Extra press|Fill Order|(Unused)|(Unused)|Branches|
-|PAGE3|ALT|(Unused)|Alternate Repeats|(Unused)|(Unused)|
+|PAGE3|ALT|(Unused)|Alternate Repeats|Alternate Bars|(Unused)|
 |PAGE4|Short press|Rolls|Roll Count|Roll Steps|(Unused)|
 |CLK|Short press|Clock delay|Clock division|(Unused)|(Unused)|
 |GRV|Short press|Timing 1|Timing 2|Timing 3|Timing 4|
@@ -99,7 +99,7 @@ This is supposed to be a summary of all the parameters their defaults their mapp
 |**Both**|PAGE3 + GATE/CV + Long press|Fill Order|0|**0**|0 - 3|E1|
 |**Both**|PAGE3 + GATE/CV|Repeats|0|**1 Repeat**(Due to + 1 offset)|1 - 4|E2|
 |**Both**|PAGE3 + GATE/CV + ALT|Alternate Repeats|0|**1 Repeat** (Due to + 1 offset)|1 - 4|E2|
-|**Both**|PAGE3 + GATE/CV|Alternate Bars|2|**2 Bars** (Due to + 1 offset)|1 - 8|E3|
+|**Both**|PAGE3 + GATE/CV + ALT|Alternate Bars|2|**2 Bars** (Due to + 1 offset)|1 - 8|E3|
 |**Both**|PAGE3 + GATE/CV|Morphs|0|**0%**|0 - 1|E4|
 |**Both**|PAGE3 + GATE/CV + Long press|Branches|0|**0**|0 - 4|E4|
 |**Both**|PAGE4 + GATE/CV|Rolls|0|**0%**|0 - 1|E1|
