@@ -99,7 +99,7 @@ This is supposed to be a summary of all the parameters their defaults their mapp
 |**Both**|PAGE3 + GATE/CV + Long press|Fill Order|0|**0**|0 - 3|E1|
 |**Both**|PAGE3 + GATE/CV|Repeats|0|**1 Repeat**(Due to + 1 offset)|1 - 4|E2|
 |**Both**|PAGE3 + GATE/CV + ALT|Alternate Repeats|0|**1 Repeat** (Due to + 1 offset)|1 - 4|E2|
-|**Both**|PAGE3 + GATE/CV + ALT|Alternate Bars|2|**2 Bars** (Due to + 1 offset)|1 - 8|E3|
+|**Both**|PAGE3 + GATE/CV + ALT|Alternate Bars|0|**1 Bars** (Due to + 1 offset)|1 - 8|E3|
 |**Both**|PAGE3 + GATE/CV|Morphs|0|**0%**|0 - 1|E4|
 |**Both**|PAGE3 + GATE/CV + Long press|Branches|0|**0**|0 - 4|E4|
 |**Both**|PAGE4 + GATE/CV|Rolls|0|**0%**|0 - 1|E1|
